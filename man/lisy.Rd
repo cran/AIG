@@ -2,12 +2,12 @@
 % Please edit documentation in R/lisy.R
 \name{lisy}
 \alias{lisy}
-\title{lisy}
+\title{Linear Syllogism Generator}
 \usage{
-lisy(seed = 1, nclues = 4, nspread = 5, incidental = "names",
-  antonym = "both", ninfer = 1, direct = "of", Ndist = 4,
-  dist = "mixed", distprob = 0.5, itemSet = "random", items = NULL,
-  scales = NULL)
+lisy(seed = 1, nclues = 4, nspread = 5, clone = NULL,
+  incidental = "names", linear = FALSE, antonym = "both", ninfer = 1,
+  direct = "ob", Ndist = 4, dist = "mixed", distprob = 0.5,
+  itemSet = "random", items = NULL, scales = NULL)
 }
 \arguments{
 \item{seed}{Generates the same question again from local computer.}
@@ -16,7 +16,11 @@ lisy(seed = 1, nclues = 4, nspread = 5, incidental = "names",
 
 \item{nspread}{Calculates the spread of possible incidentals in total.}
 
+\item{clone}{Null means that every generated item may or may not have a different position in the inference. If given a numeric value, then the items will have the same inference position.}
+
 \item{incidental}{Tells the function whether the item features are 'names' or 'objects'.}
+
+\item{linear}{If linear = TRUE, a matching operator(i.e. name or object) will appear in all the adjacent clues in the sentence.}
 
 \item{antonym}{Determine whether to use both antonyms ('both') or only one type ("first" or "second").}
 
@@ -48,14 +52,19 @@ When nspread and nclues are the same, all the names of the invalid distractors w
 
 This function only generates items that requires up to 3 inferences. As the required inferences increases, then number of clues needed also increases. Inference is the implied comparison between sentences which allows the test taker to make an inform decision. When ninfer = 1 and the antonym is declared as either 'first' or 'second', then the correct answer will always be the opposite of the antonym used in the sentence. When ninfer = 2, the correct answer will be in the right direction.
 
+Direct is the direction of the line of thought. If direct = "ob" it means that solving the items requires the test taker to work 'ordered backward'. If it is 'of', it means 'ordered  forward' and finally if it is 'alt', then it means the clues are not in order. direct = 'alt' can only be used when ninfer = 3.
 
-Direct is the direction of the line of thought. If direct = "ob" it means that solving the items requires the test taker to work 'ordered backward'. If it is 'of', it means 'ordered  forward' and finally if it is 'alt', then it means the clues are not inorder. direct = 'alt' can only be used when ninfer = 3.
+When linear = FALSE, there might be a possible of having just a single mental model, or having completing models. This is random and will depend on the seed selected.
+
+When linear = TRUE, the direct and antonym position follow together. i.e. If direct = "of" and antonym = "first". The antonym will be the same for the question and the answer. Same when direct = "of" and antonym = "second". In such suitation, the names will follow in a linear sequence (A > B, B > C, C > D). However, when direct is changed to "ob",  then the sentence structure changes to becomes (C > D, B > C, A > B). For both situations, this is directly looking at the difficulty of mental array. Under such circumstances, 2 answers will be generated. Either one is correct, but they are the inverse antonym of each other. When direct = "both", the names will most likely not follow a linear sequence, and the antonyms will interchange between sentence (i.e. A > B, C > B, C < E).
+
+When linear = TRUE and infer = 3, the last sentence will always not be one of the clues for the inference. If you want to study distance effect, then what is recommended is to generate the items with ninfer = 3, and remove the last clues in the sentence structure.
 
 When distprob = 0.5, the distribution of the antonym for the distractors will be mixed. When distprob is either 1 or 0, then only one of the two antonym will be used. This is only used if one wishes to study distractor analysis.
 }
 \examples{
 #Generate an item with default item set
-lisy(seed=10,nclues=4,nspread=6,incidental='names',
+lisy(seed=10,nclues=4,nspread=6,clone = NULL,incidental='names',linear=FALSE,
     antonym="first",ninfer = 3, direct='ob', Ndist=3,
     dist="mixed",distprob=0.5,itemSet='random',
     items= NULL,scales = NULL)
@@ -70,32 +79,28 @@ compare <- c("taller","shorter", "older", "younger",
  "smaller", "bigger","stronger", "weaker")
 
 #Generate item with own dataset
-lisy(seed=10,nclues=4,nspread=6,incidental='names',
+lisy(seed=1,nclues=4,nspread=6,clone = NULL,incidental='names',linear=FALSE,
     antonym="first",ninfer = 3, direct='ob',
     Ndist=3, dist="mixed",distprob=0.5,
     itemSet='own',items= superheroes, scales = compare)
 
 #loop through 30 items
-nitems <- 30
-params <- data.frame(seed=1:nitems,
-                     nclues=ceiling((1:nitems)/20)+3,
-                     nspread=ceiling((1:nitems)/15)+4)
-
-qtable <- NULL
-for (i in 1:nitems) {
-  runs <- lisy(seed=i,
-               nclues=params$nclues[i],
-               nspread=params$nspread[i],
-               incidental= 'names',antonym="first",ninfer = 2,
-               direct='of', Ndist=4,dist="mixed",distprob=.5,
-                itemSet='own', items= superheroes, scales = compare)
-  qtable[[i]] <- runs
+run <- NULL
+for(i in 1:30){
+ run[[i]]<-AIG::lisy(seed=i,nclues=4,nspread=5,clone = 1,incidental='names',linear=TRUE,
+                     dist="false",distprob=0.5,itemSet='random',
+                     antonym="both",ninfer = 3, direct='of', Ndist=3,
+                    items= NULL,scales = NULL)
 }
-
-qtable
-
 }
 \author{
 Aiden Loe and Francis Smart
+}
+\references{
+Leth-Steensen, C., & Marley, A. A. J. (2000). A model of response time effect in symbolic comparison. \emph{Psychological Review, 107}, 62-100.
+
+Sternberg, R. J. (1980). Representation and process in linear syllogistic reasoning. Journal of Experimental Psychology: General, 109(2), 119.
+
+Sedek, G., & Von Hecker, U. (2004). Effects of subclinical depression and aging on generative reasoning about linear orders: Same or different processing limitations?. \emph{Journal of Experimental Psychology: General, 133(2)}, 237.
 }
 
