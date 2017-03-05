@@ -2,11 +2,14 @@
 AIG
 ===
 
-AIG is a collection of Automatic Item Generators. Currently, only the linear syllogism and arithmetic generators are in the package. More is to follow soon!
+AIG is a collection of Automatic Item Generators. Currently, the generator can create linear syllogistic, arithmetic and 2D/3D spatial reasoning items. More is to follow soon!
 
 -   AIG
     -   `lisy`
     -   `arith`
+    -   `spatial2d`
+    -   `spatial3d`
+    -   `spatial3d_mirror`
 
 Installation
 ------------
@@ -18,7 +21,14 @@ if(!require("devtools")) install.packages("devtools")
 devtools::install_github("Aidenloe/AIG")
 ```
 
-To do list
-==========
+------------------------------------------------------------------------
 
-Giving two answers rather than one. i.e. A is greater than B, and B is smaller than A. Currently only one answer is provided. Making a linear premise for up to 3 inferences.
+### License
+
+This package is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 3, as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose.
+
+See the GNU General Public License for more details.
+
+A copy of the GNU General Public License, version 3, is available at <https://www.r-project.org/Licenses/GPL-3>
