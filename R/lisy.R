@@ -33,7 +33,7 @@
 #'
 #'When linear = FALSE, there might be a possible of having just a single mental model, or having completing models. This is random and will depend on the seed selected.
 #'
-#'When linear = TRUE, the direct and antonym position follow together. i.e. If direct = "of" and antonym = "first". The antonym will be the same for the question and the answer. Same when direct = "of" and antonym = "second". In such suitation, the names will follow in a linear sequence (A > B, B > C, C > D). However, when direct is changed to "ob",  then the sentence structure changes to becomes (C > D, B > C, A > B). For both situations, this is directly looking at the difficulty of mental array. Under such circumstances, 2 answers will be generated. Either one is correct, but they are the inverse antonym of each other. When direct = "both", the names will most likely not follow a linear sequence, and the antonyms will interchange between sentence (i.e. A > B, C > B, C < E).
+#'When linear = TRUE, the direct and antonym position follow together. i.e. If direct = "of" and antonym = "first". The antonym will be the same for the question and the answer. Same when direct = "of" and antonym = "second". In such suitation, the names will follow in a linear sequence (A > B, B > C, C > D). However, when direct is changed to "ob",  then the sentence structure changes to becomes (C > D, B > C, A > B). For both situations, this is directly looking at the difficulty of mental array. Under such circumstances, 2 answers will be generated. Either one is correct, but they are the inverse antonym of each other. When direct = "alt", the names will most likely not follow a linear sequence, and the antonyms will interchange between sentence (i.e. A > B, C > B, C < E).
 #'
 #'When linear = TRUE and infer = 3, the last sentence will always not be one of the clues for the inference. If you want to study distance effect, then what is recommended is to generate the items with ninfer = 3, and remove the last clues in the sentence structure.
 #'
@@ -201,7 +201,7 @@ if(Ndist > 4) stop("Please choose a lower number of distractors")
   # linear=FALSE
   # antonym = "both"
   # ninfer = 3
-  # direct= 'ob'
+  # direct= 'alt'
   # Ndist=4
   # dist="false"
   # distprob=.5
@@ -739,7 +739,9 @@ if(direct  == "of"){
     (pos2 <- paste0(clues[,1],'.',clues[,2])) # check for all combination
     (a <- (1:length(pos2))[!pos2 %in% pos]) # remove left out combination
     (leftOut <- clues[a,1:2])
-    altclues<- rbind(leftOut, rclues[,1:2]) # rearrange order
+
+
+    altclues<- rbind(leftOut, as.matrix(rclues[,1:2])) # rearrange order
 
     (iclues <- cbind(itemlist[altclues[,1]],itemlist[altclues[,2]])) # new ordering for names
 
