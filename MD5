@@ -1,4 +1,4 @@
-71501c2cfd89acb25ded650929da71fa *DESCRIPTION
+ba87830c7aa748c8f277aeda2986ad6d *DESCRIPTION
 3e0535d680d8abbca1f02c0bd9e9c2e9 *NAMESPACE
 c8467a0621305bb7162fee8c14be1a76 *R/AIG.R
 630aa4669e513ff6f42ebcfb5a915e10 *R/ARMadd.R
@@ -7,11 +7,11 @@ bf4113cd3bc8158070dd7178b188f966 *R/MR3d2.R
 df7b0215923cbc18baffab6dabced2b9 *R/MRcube.R
 a38f5ebc64fcd5e2bba80d00ea54c041 *R/MRtwoD.R
 4c02c3f6e28063d026f625fdcfdd31de *R/classes.R
-da978448c361159494979aa20d5ff24c *R/lisy.R
+fcd64ba698361fae3131c8c11adcfb0a *R/lisy.R
 6891ee23199ce8bf991c16a5f67f47bd *README.md
 811328ee4454415f23b59ac980c4ab71 *man/AIG.Rd
 fc96e5c4fce917c21459bd89a9e414bb *man/arith.Rd
-5384f43edb9fd0b927110ede8b565bc7 *man/lisy.Rd
+385609ca43a9ef69852ac49886b898ab *man/lisy.Rd
 e185dac6899e872a5aaa7d0fc08377cb *man/spatial2d.Rd
 9adc177061341b2b5bff566f1899e73a *man/spatial3d.Rd
 477349a398f46ff75978f04f340c7150 *man/spatial3dDouble.Rd

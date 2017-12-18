@@ -10,34 +10,35 @@
 #' @param nspread Calculates the spread of possible incidentals in total.
 #' @param clone Null means that every generated item may or may not have a different position in the inference. If given a numeric value, then the items will have the same inference position.
 #' @param incidental Tells the function whether the item features are 'names' or 'objects'.
-#' @param linear If linear = TRUE, a matching operator(i.e. name or object) will appear in all the adjacent clues in the sentence.
+#' @param linear Linear is the line of thought. If linear is TRUE, then the comparions are going in either forward or backward direction. The direction is based on the direct argument. When linear is FALSE, some extra incidentals (e.g. random names) that are not useful are also generated in the statement. The hypothesis is that people may have to create two or more mental models, completing with each other to find the correct answer amongst the response options.
 #' @param antonym Determine whether to use both antonyms ('both') or only one type ("first" or "second").
 #' @param ninfer Generate answers that requires a X amount of inference from the items. Up to 3 is the maximum.
-#' @param direct Deciding on whether the clues are organised in an ordered("of" = ordered forward / "ob" = ordered backward) or unordered ('alt' = alternative) fashion. Note. 'alt' can only be used when ninfer is 3 or greater.
+#' @param direct Deciding on whether the statements are organised in an ordered ("of" = ordered forward / "ob" = ordered backward), randomly selected ordered  ('alt' = alternative) fashion or unordered('mixed') fashion. Note. 'alt' can only be used when ninfer is equal to 3.
 #' @param Ndist Returns the number of distractors per question.
 #' @param dist Select the type of distractors. You have three options ('mixed', 'invalid','false'). If dist='false', then the number of false distractors must be less than the number of clues by 1.
 #' @param distprob Calculates the number of comparison variation for the distractors.
 #' @param itemSet This is the choice of itemset you want. If itemSet='random' then the generator will randomly select one ('People', 'Fruits', 'Superheroes'). Change itemset='own' if you are using your own item set.
-#' @param items Input own item type. At least 10 items. Default items are used when items = NULL.
+#' @param items Input own incidental features, with at least 10 of them. Default incidental features (either names, objects or superheros ) are used when items = NULL.
 #' @param scales Input own antonyms. At least 2 antonyms (i.e."bigger","smaller"). Default antonyms are used when scales = NULL.
 #' @description This function generates linear syllogistic reasoning items. This is for research purposes.
-#' @details There are several things to note. To use own item set, please have at least 10 items within the itemset. In order for antonyms comparison to work, please ensure that you have at least 2 antonyms The function will stop if the criteria is not met. The genearation of items are slower if you have a huge item set (e.g. In the millions!).
+#' @details There are several things to note. To use own item set, please have at least 10 incident features (e.g. 10 different names).  In order for antonyms comparison to work, please ensure that you have at least 2 antonyms The function will stop if the criteria is not met. The genearation of items are slower if you have a huge item set (e.g. In the millions!).
 #'
 #' When nspread and nclue is = 3. This means that there are 3 sentences, and only 3 names. This makes it impossible to generate an invalid distractor. As such, only the false distractors will be created. Since there are only three clues, then at most 2 false distractors can be created.
-#' When nspread and nclues are the same, all the names of the invalid distractors will be taken from the names that are used in the clues. As nspread value increases, the likelihood of having names not taken from the clues increases. Making the distractors fairly easy as there is a higher likelihood that the names taken from the matrix might not appear in the clues. Hence, keeping the value of nspread and nclue as close as possible is recommended.
 #'
+#' When nspread and nclues are the same, all the names of the distractors will be taken from the names that are used in the clues. As nspread value increases, the likelihood of having names not taken from the clues increases. Making the distractors fairly easy as there is a higher likelihood that the names taken from the matrix might not appear in the clues. Hence, keeping the value of nspread and nclue as close as possible is recommended.
 #'
 #' This function only generates items that requires up to 3 inferences. As the required inferences increases, then number of clues needed also increases. Inference is the implied comparison between sentences which allows the test taker to make an inform decision. When ninfer = 1 and the antonym is declared as either 'first' or 'second', then the correct answer will always be the opposite of the antonym used in the sentence. When ninfer = 2, the correct answer will be in the right direction.
 #'
-#' Direct is the direction of the line of thought. If direct = "ob" it means that solving the items requires the test taker to work 'ordered backward'. If it is 'of', it means 'ordered  forward' and finally if it is 'alt', then it means the clues are not in order. direct = 'alt' can only be used when ninfer = 3.
+#' Direct is the direction of the clue provided. In the function, the argument direct = "ob" means that solving the items requires the test taker to work 'ordered backward'. If it is 'of', it means 'ordered forward'. Finally, if it is 'alt', then it means the clues are not in order. direct = 'alt' can only be used when ninfer = 3. The clues provided in the question are useful for the first three arguments. However, when direct = "mixed", this means that the sentences are randomly placed. Making it difficult for the participant to form a linear array of the item. In this case, the clues are not useful, so NA is given in the output instead.
 #'
-#'When linear = FALSE, there might be a possible of having just a single mental model, or having completing models. This is random and will depend on the seed selected.
+#'When linear = TRUE, the sentence structure will be in a linear order. i.e. when antonym = "first" or antonym = "second" and direct = "of", the names will follow in a linear sequence (A > B, B > C, C > D). However, when antonym = "first" or antonym = "second" and direct = "ob",  then the sentence structure changes to becomes (C > D, B > C, A > B).  When antonym = "both", the names will still follow a linear sequence either forward or backward, but the antonyms will interchange between sentence (i.e. A > B, C < B, C > D). Nevertheless, 'A' will always be bigger than the 'D'.  The argument direct = 'alt' cannot be used when linear = TRUE.
 #'
-#'When linear = TRUE, the direct and antonym position follow together. i.e. If direct = "of" and antonym = "first". The antonym will be the same for the question and the answer. Same when direct = "of" and antonym = "second". In such suitation, the names will follow in a linear sequence (A > B, B > C, C > D). However, when direct is changed to "ob",  then the sentence structure changes to becomes (C > D, B > C, A > B). For both situations, this is directly looking at the difficulty of mental array. Under such circumstances, 2 answers will be generated. Either one is correct, but they are the inverse antonym of each other. When direct = "alt", the names will most likely not follow a linear sequence, and the antonyms will interchange between sentence (i.e. A > B, C > B, C < E).
+#'When linear = TRUE and infer = 3, the last sentence will not be one of the clues for the inference. If you want to study distance effect, then what is recommended is to generate the items with ninfer = 3, and remove the last clue in the sentence structure.
 #'
-#'When linear = TRUE and infer = 3, the last sentence will always not be one of the clues for the inference. If you want to study distance effect, then what is recommended is to generate the items with ninfer = 3, and remove the last clues in the sentence structure.
+#'When linear = FALSE, there might be a possible of having just a single mental model, or having completing mental models. This is random and will depend on the seed selected. The statements are randomly placed but in the general order of the direct argument provided. The clues remain in the order given based on the direct argument.
 #'
 #'When distprob = 0.5, the distribution of the antonym for the distractors will be mixed. When distprob is either 1 or 0, then only one of the two antonym will be used. This is only used if one wishes to study distractor analysis.
+#'
 #' @references
 #'
 #' Leth-Steensen, C., & Marley, A. A. J. (2000). A model of response time effect in symbolic comparison. \emph{Psychological Review, 107}, 62-100.
@@ -97,6 +98,13 @@ lisy <- function( seed=1,
                   items=NULL,
                   scales = NULL
 ){
+
+  incidental <- tolower(incidental)
+  antonym <- tolower(antonym)
+  direct <- tolower(direct)
+  dist <- tolower(dist)
+  itemSet <- tolower(itemSet)
+
 
   if(itemSet != 'random' && itemSet !='own'){
     stop("Please declare either 'random' or 'own' item set.")
@@ -192,22 +200,23 @@ if(Ndist > 4) stop("Please choose a lower number of distractors")
     stop("Cannot create invalid distractors. Only false. ")
   }
 
-#
-  # seed=2
-  # nclues=6
-  # nspread = 8
-  # clone = NULL
-  # incidental='names'
-  # linear=FALSE
-  # antonym = "both"
-  # ninfer = 3
-  # direct= 'alt'
-  # Ndist=4
-  # dist="false"
-  # distprob=.5
-  # itemSet='random'
-  # items=NULL
-  # scales = NULL
+# #
+#   seed=2
+#   nclues=4
+#   nspread = 5
+#   clone = 1
+#   incidental='names'
+#   linear=FALSE
+#   antonym = "first"
+#   ninfer = 3
+#   direct= 'mixed'
+#   Ndist=4
+#   dist="mixed"
+#   distprob=.5
+#   itemSet='random'
+#   items=NULL
+#   scales = NULL
+
 
 
 
@@ -222,17 +231,34 @@ nnclues <- nnspread <- 1
   if(is.null(items)  | is.null(scales)){
     sets <- c('people', 'fruit', 'superheroes')
     items <- list(people=c('Amy', 'Susan', 'Bob', 'Mary', 'Robert', 'Ernest', 'Henry', 'Peter','Jake','Jenny',
-                           'Edward','Sam','Marcus','Mario'),
-                  fruit=c('apple','pear','nectarine','tomato','avocado','lemon','orange','mango','peach','plum','tangerine'),
-                  superheroes=c('Spiderman','Superman','Batman','Wolverine','Catwoman','Thor','The Shadow','Silver Surfer',
-                                'Captain America','Hurcleus','Harry Potter','Hulk','Gandalf'))
+                           'Edward','Sam','Marcus','Mario', "Michael", 'Alex', "Paul", "John", "Tom", "William",
+                           "Jack", "Charlotte", "Bella", "Aiden", "Rossi", "Caroline", "Osbert", "Cecilia",
+                           "Philipp", "Sean", "Bill", "David", "Tim", "Jones", "Jim", "Zach", "Sarah", "Nat",
+                           "Jennifer","Candice", "Sara", "Anne", "Anna", "Joanna", "Sophia", "Annie", "Moses",
+                           "Dylan", "Kim", "Kevin", "Jill", "Carol","Victoria", "Vicky", "Lara", "Laura", "Debbie"),
+                  fruit=c('apple','pear','nectarine','tomato','avocado','lemon','orange','mango','peach','plum',
+                          'tangerine','watermelon',"strawberry", "banana", "apricot", "jackfruit", "durian",
+                          "grapefruit","papaya", "mango", "coconut", "cucumber","dragon fruit","mangosteen",
+                          "pomegranate", "pomelo", "rambutan", "soursop","gooseberry", "cantaloupe", "guava",
+                          'tamarind', 'eggplant', 'honeydew','plantain'),
 
-    scales <- list(people=matrix(c('taller', 'shorter','older', 'younger','faster', 'slower'),
+                  superheroes=c('Spiderman','Superman','Batman','Wolverine','Catwoman','Thor','Silver Surfer',
+                                'Captain America','Hercules','Harry Potter','Hulk','Gandalf','Ironman', "Wonder Woman",
+                                "Invisible Woman","Elektra", "Supergirl","Dare Devil","Aquaman","Black Canary",
+                                "Alan Scott", "Raven","Zatanna", "Starfire", "Professor X", "Doctor Strange", "Hawkeye",
+                                "Power Girl"))
+
+    scales <- list(people=matrix(c('taller', 'shorter','older', 'younger','faster', 'slower',
+                                   "kinder", "less kind", "more frank", "less frank", "more reliable", "less reliable",
+                                   "more sensible", "less sensible", "wittier", "less witty", "more ambitious", "less ambitious"),
                                  nrow=2),
                    fruit = matrix(c('more fresh', 'less fresh','bigger', 'smaller',
-                                    'heavier', 'lighter','tastier', 'less tasty'), nrow=2),
+                                    'heavier', 'lighter','tastier', 'less tasty',
+                                    'more nutritious', "less nutritious", "harder to buy", "easier to buy",
+                                    "more juicy", "less juicy", "more intense", "less intense",
+                                    "sweeter", "less sweet"), nrow=2),
                    superheroes=matrix(c('stronger', 'weaker','cooler', 'less cool','braver',
-                                        'less brave','less powerful', 'more powerful'), nrow=2))
+                                        'less brave','more powerful', 'less powerful'), nrow=2))
 
   }else{
     sets <- "own"
@@ -257,6 +283,7 @@ nnclues <- nnspread <- 1
 
   itemlist <- sample(items[[set]])
 
+
   if(length(itemlist) < nspread){
     stop("There is insufficient unique names. Either reduce nspread, or add more items into the item set.")
   }
@@ -268,7 +295,7 @@ nnclues <- nnspread <- 1
 
   # List of possible clues ####
   pclues <- NULL
-  if(direct=="of" | direct == 'alt'){
+  if(direct=="of" | direct == 'alt' | direct == "mixed"){
     for (i in 2:nspread) for (ii in (i-1):1) {
       pclues <- rbind(pclues, c(i,ii))
     }
@@ -277,7 +304,7 @@ nnclues <- nnspread <- 1
       pclues <- rbind(pclues, c(ii,i))
     }
   }else{
-    stop("Please declare 'of', 'ob' or 'alt' for the label arg.")
+    stop("Please declare 'of', 'ob', 'alt' or 'mixed' for the label arg.")
   }
 
   # no choice. can't get 3 infer otherwise.
@@ -516,6 +543,7 @@ join <- function(clue, thescale, article, forward=TRUE) {
   }
 
 
+
   if (length(invkeeps) > 0 ) iinvkeeps <- rbind(
     cbind(itemlist[invkeeps[,1]],itemlist[invkeeps[,2]]),
     cbind(itemlist[invkeeps[,2]],itemlist[invkeeps[,1]]))
@@ -527,6 +555,7 @@ if(length(invkeeps)==0) {
 if(linear==TRUE){
   iinvkeeps<- matrix(NA, nrow=0, ncol=2)
 }
+iinvkeeps
 
   ############ FALSE RESPONSES ##########
   (falses  <- cbind(pclues[Nval,2],pclues[Nval,1]))
@@ -536,6 +565,13 @@ if(ninfer==3 && linear==TRUE && direct == "of"){ #Flip back the matrix to forwar
   (falses  <- cbind(pclues[Nval,1],pclues[Nval,2]))
   (ifalses <- cbind(itemlist[falses[,1]],itemlist[falses[,2]]))
 }
+
+if(ninfer==3 && linear==FALSE && direct == "of"){ #Flip back the matrix to forward
+  (falses  <- cbind(pclues[Nval,1],pclues[Nval,2]))
+  (ifalses <- cbind(itemlist[falses[,1]],itemlist[falses[,2]]))
+}
+
+
 
 
   #### GENERATE CORRECT RESPONSE OPTION #####
@@ -555,7 +591,12 @@ if(ninfer==3 && linear==TRUE && direct == "of"){ #Flip back the matrix to forwar
 
 (maxinfer <- maxinferlist[sample(nrow(maxinferlist), 1),])
 (maxitems <- itemlist[as.numeric(maxinfer[1:2])])
+
 if(ninfer==3 && linear==TRUE && direct == "of"){ #Flip back the matrix to forward
+  (maxitems <- rev(itemlist[as.numeric(maxinfer[1:2])]))# The answer has to flip as well.
+}
+
+if(ninfer==3 && linear==FALSE && direct == "of"){ #Flip back the matrix to forward
   (maxitems <- rev(itemlist[as.numeric(maxinfer[1:2])]))# The answer has to flip as well.
 }
 
@@ -624,7 +665,7 @@ if(ninfer==3 && linear==TRUE && direct == "of"){ #Flip back the matrix to forwar
   }else if (antonym == "second"){
     maxanswer <- cap(p(join(maxitems, thescale, article,
                             forward=FALSE),'.'))
-    maxanswer
+
     if(ninfer == 1){
       maxanswer <- cap(p(join(maxitems, thescale, article,
                               forward=TRUE),'.'))
@@ -661,9 +702,12 @@ if(ninfer==3 && linear==TRUE && direct == "of"){ #Flip back the matrix to forwar
     if(exists("maxanswer2")==FALSE){
       maxanswerFinal <-maxanswer
     }else{
-      maxanswerFinal <- paste(maxanswer,maxanswer2)
+      # randomly select one of the two answer
+      value <- sample(2,1, prob=c(.5,.5))
+      maxanswerFinal<- cbind(maxanswer,maxanswer2)[value]
       rm(maxanswer2)
     }
+
 
 
 #### ###### #### CLUES ORDERING IN THE SENTENCE ### #### ####
@@ -691,6 +735,11 @@ if(direct  == "of"){
     (iclues <- cbind(iclues[,2], iclues[,1]))
   }
 
+  if(ninfer==3 && linear==FALSE){ #Flip back the matrix to forward but the answer is in reverse
+    (iclues <- cbind(iclues[,2], iclues[,1]))
+  }
+
+clues
 }else if(direct == "ob"){
   maxinfer
   (clues<- clues[order(clues[,1], decreasing = TRUE),])
@@ -708,9 +757,9 @@ if(direct  == "of"){
   check
 
   (iclues <- cbind(itemlist[clues[,1]],itemlist[clues[,2]]))
-  # if(nnclues== 3 && nnspread == 4 && linear==TRUE){  #To remove last sentence
-  #   ( iclues <- iclues[-nrow(iclues),])
-  # }
+  if(nnclues== 3 && nnspread == 4 && linear==TRUE){  #To remove last sentence
+    ( iclues <- iclues[-nrow(iclues),])
+  }
 
 
 
@@ -741,7 +790,7 @@ if(direct  == "of"){
     (leftOut <- clues[a,1:2])
 
 
-    altclues<- rbind(leftOut, as.matrix(rclues[,1:2])) # rearrange order
+    (altclues<- rbind(leftOut, as.matrix(rclues[,1:2]))) # rearrange order
 
     (iclues <- cbind(itemlist[altclues[,1]],itemlist[altclues[,2]])) # new ordering for names
 
@@ -767,9 +816,41 @@ if(direct  == "of"){
 
   (iclues <- cbind(itemlist[clues[,1]],itemlist[clues[,2]]))
 
+  }else if(direct == "mixed"){
+
+    maxinfer
+    (clues<- clues[order(clues[,1], decreasing = TRUE),])
+    (rclues <- unlist(strsplit(maxinfer[,4], "[.]")))
+    (rclues <- (1:length(infer$rclues))[infer$rclues %in% rclues])
+    (rclues <- infer[rclues,1:4]) #clues
+    (pos    <- paste0(rclues[,1] ,'.',rclues[,2]))
+    (pos2 <- paste0(clues[,1],'.',clues[,2]))
+
+    check<- NULL
+    for(i in pos){
+      (check[i] <- (1:length(pos2))[pos2 %in% i])
+    }
+    check
+
+    (randomised <- sample(1:2,1))
+    if(randomised == 1){
+      (check <- rev(check))
+    }
+
+    check <- rep('blank', length(check))
+
+    ### the clues don't work when we randomised the sentences
+    (iclues <- cbind(itemlist[clues[,1]],itemlist[clues[,2]]))
+    sampled <- sample(1:nrow(iclues),nrow(iclues))
+    (iclues <- iclues[sampled,])
+    iclues
+    #message("clues are not helpful when distract = mixed")
+
+
+
 
 }else{
-  stop("Please declare 'of', 'ob' or 'alt' for the label arg.")
+  stop("Please declare 'of', 'ob', 'alt','mixed' for the label arg.")
 }
 
 
@@ -808,7 +889,7 @@ if(is.na(inferClues[3])){
   inferClues[3] <- " "
 }
 inferClues
-
+iclues
 
 
 # CREATE SENTENCE STRUCTURE ####
@@ -816,13 +897,19 @@ q <- 'Clues: '
 dreturn <- c()
 dtype <- c()
 
-q <- NULL
+q <- ""
 if(antonym=='both'){
+while((grepl(thescale[1], q) && grepl(thescale[2], q)) == FALSE){
+  q <- NULL
   for (i in 1:nrow(iclues)) {
     q <- p(q, join(iclues[i,], thescale, article,
                    forward=rbinom(1, 1, distprob)==1))
     if (i<nrow(iclues)) q <- p(q, ', ')
   }
+}
+
+
+
 }else if(antonym == 'first'){
   for (i in 1:nrow(iclues)) {
     q <- p(q, join(iclues[i,], thescale, article,
@@ -900,7 +987,7 @@ dlist
         (dlist.df <- as.data.frame(dlist))
         if(length(unique(dlist.df$type))==2){ #if 2 = "invalid" and "falses" distractor type
           (type <- dlist.df$type)
-          (dlist.df <- sample_n(group_by(dlist.df,type),size=ceiling(Ndist/2),replace=FALSE,weight=NULL ,0.5))
+          (dlist.df <- sample_n(group_by(dlist.df,type),size=ceiling(Ndist/2),replace=FALSE,weight=NULL))
           (dlist.df <- dlist.df[sample(nrow(dlist.df)),])
 
           if(Ndist %% 2 == 0){
@@ -914,7 +1001,7 @@ dlist
         }else{ # if only one distractor type
           (dlist.df <- as.data.frame(dlist))
           (type <- dlist.df$type)
-          (dlist.df <- sample_n(group_by(dlist.df,type), size=Ndist,replace=FALSE,weight=NULL ,0.5))
+          (dlist.df <- sample_n(group_by(dlist.df,type), size=Ndist,replace=FALSE,weight=NULL))
           (dtype <- dlist.df[,3])
           (dtype <- as.character(as.matrix(dtype)))
         }
